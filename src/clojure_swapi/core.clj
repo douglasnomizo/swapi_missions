@@ -15,4 +15,7 @@
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (println (mperson 1)))
+  (println (time (person 1)))
+  (println (time (person 1)))
+  (println (time (mperson 1)))
+  (println (time (mperson 1))))
