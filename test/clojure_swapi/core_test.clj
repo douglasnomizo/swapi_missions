@@ -2,6 +2,9 @@
   (:require [clojure.test :refer :all]
             [clojure-swapi.core :refer :all]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(def people-list '(1,42,5,5,1,45,33,50,55,66,67,68,80))
+
+(def get-fn #( {} ))
+
+(deftest split-by-species
+    (is (= () (people-by :species people-list))))

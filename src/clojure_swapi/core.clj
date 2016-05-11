@@ -1,35 +1,45 @@
 (ns clojure-swapi.core
-  (:require [clj-http.client :as client])
-  (:require [clojure.data.json :as json])
+  (:require [clojure-swapi.io.client :as swapi])
+  (:require [clojure-swapi.domain.api :as core])
   (:gen-class))
 
-(def swapi "http://swapi.co/api/")
-(def people (str swapi "people/"))
-(def vehicles (str swapi "vehicles/"))
 
-(defn get-json
-  [url]
-  (json/read-str (:body (client/get url))))
+(defn keywords
+  [my-map]
+  (into {}
+  (for [[k v] my-map]
+    [(keyword k) v])))
 
-(defn person 
-  [identifier]
-  (get-json (str people identifier)))
+(defn unknown-as-100
+  [mass]
+  (if (= mass "unknown") 100 (read-string mass)))
 
-(def mperson (memoize person))
+(defn update-mass
+  [person]
+  (update person "mass" unknown-as-100))
 
-(defn by
-  [type collection]
-  (group-by #(get % (name type)) collection))
+(defn update-species
+  [person]
+  (update person "species"
+    (fn [species]
+      (vec
+        (map #(get % "name") (map swapi/mget-json species))))))
 
-(defn people-by
-  [type identification-list]
-  (comp (by type (map mperson identification-list))))
+(defn ceil-division
+  [numerator denominator]
+  (Math/ceil (/ numerator denominator)))
 
-(defn vehicle
-  [identifier]
-  (get-json (str vehicles identifier)))
 
 (defn -main
   [& args]
-  (def identification-list '(1,2,5))
-  (clojure.pprint/pprint (people-by :species identification-list)))
+
+  (def identification-list '(1, 2, 5, 5, 62, 71, 72))
+  (def allience-tank (swapi/vehicle "72"))
+  (def people (map #(select-keys % ["name", "species", "mass"]) (map swapi/person identification-list)))
+  (def updated-people-mass (map update-mass people))
+  (def updated-people-species (map update-species people))
+  (def by-species (core/people-by :species updated-people-species))
+
+  (clojure.pprint/pprint "List by species with name, species and mass properties")
+  (clojure.pprint/pprint by-species)
+)
