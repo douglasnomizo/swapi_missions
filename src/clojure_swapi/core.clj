@@ -1,6 +1,8 @@
 (ns clojure-swapi.core
   (:require [clojure-swapi.io.client :as swapi])
+  (:require [org.httpkit.client :as http])
   (:require [clojure-swapi.domain.api :as core])
+  (:require [clojure.data.json :as json])
   (:gen-class))
 
 
@@ -35,11 +37,14 @@
 
   (def identification-list '(1, 2, 5, 5, 62, 71, 72))
   (def allience-tank (swapi/vehicle "72"))
-  (def people (map #(select-keys % ["name", "species", "mass"]) (map swapi/person identification-list)))
-  (def updated-people-mass (map update-mass people))
-  (def updated-people-species (map update-species people))
-  (def by-species (core/people-by :species updated-people-species))
 
-  (clojure.pprint/pprint "List by species with name, species and mass properties")
-  (clojure.pprint/pprint by-species)
+
+  ; (def people (map #(select-keys % ["name", "species", "mass"]) (map swapi/person identification-list)))
+  ; (def updated-people-mass (map update-mass people))
+  ; (def updated-people-species (map update-species people))
+  ; (def by-species (core/people-by :species updated-people-species))
+
+
+  ; (clojure.pprint/pprint "List by species with name, species and mass properties")
+  ; (clojure.pprint/pprint by-species)
 )

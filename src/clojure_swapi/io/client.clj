@@ -26,3 +26,6 @@
 (defn species
   [identifier]
   (mget-json (str species_resource identifier)))
+
+
+; (clojure.pprint/pprint (map (fn [e] (json/read-str (:body @e))) (map #(http/get %) urls) ))
